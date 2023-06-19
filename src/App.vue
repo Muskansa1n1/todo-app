@@ -1,26 +1,37 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <task-form @addTask="addTask"></task-form>
+    <task-list ref="taskList" :tasks="tasks"></task-list>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TaskForm from "./components/TaskForm.vue";
+import TaskList from "./components/TaskList.vue";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    TaskForm,
+    TaskList,
+  },
+  data() {
+    return {
+      tasks: [],
+    };
+  },
+  methods: {
+    addTask(task) {
+      this.tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      this.tasks.push(task);
+      this.saveTasks();
+    },
+    saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(this.tasks));
+      this.$refs.taskList.updateTasks();
+    },
+  },
+  mounted() {
+    this.tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
